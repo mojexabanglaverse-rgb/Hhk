@@ -14,13 +14,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Find and build APK
+      - name: Extract ZIP and build
         run: |
-          find . -name "gradlew" -type f
-          GRADLEW=$(find . -name "gradlew" -type f | head -1)
-          DIR=$(dirname $GRADLEW)
-          chmod +x $GRADLEW
-          cd $DIR
+          find . -name "*.zip" -type f
+          ZIP=$(find . -name "*.zip" -type f | head -1)
+          unzip "$ZIP" -d extracted/
+          GRADLEW=$(find extracted/ -name "gradlew" -type f | head -1)
+          DIR=$(dirname "$GRADLEW")
+          chmod +x "$GRADLEW"
+          cd "$DIR"
           ./gradlew assembleDebug
 
       - name: Upload APK
