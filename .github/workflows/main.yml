@@ -14,14 +14,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Extract ZIP and build
+      - name: Extract ZIP
         run: |
-          find . -name "*.zip" -type f
           ZIP=$(find . -name "*.zip" -type f | head -1)
           unzip "$ZIP" -d extracted/
-          GRADLEW=$(find extracted/ -name "gradlew" -type f | head -1)
-          DIR=$(dirname "$GRADLEW")
-          chmod +x "$GRADLEW"
+
+      - name: Setup Gradle Wrapper
+        run: |
+          DIR=$(find extracted/ -name "build.gradle.kts" | grep -v "app/" | head -1 | xargs dirname)
+          echo "Project dir: $DIR"
+          cd "$DIR"
+          gradle wrapper --gradle-version 8.9
+          chmod +x gradlew
+
+      - name: Build APK
+        run: |
+          DIR=$(find extracted/ -name "build.gradle.kts" | grep -v "app/" | head -1 | xargs dirname)
           cd "$DIR"
           ./gradlew assembleDebug
 
