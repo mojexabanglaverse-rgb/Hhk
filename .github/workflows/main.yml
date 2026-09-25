@@ -14,16 +14,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission
-        run: chmod +x streamvault/gradlew
-
-      - name: Build Debug APK
+      - name: Find and build APK
         run: |
-          cd streamvault
+          find . -name "gradlew" -type f
+          GRADLEW=$(find . -name "gradlew" -type f | head -1)
+          DIR=$(dirname $GRADLEW)
+          chmod +x $GRADLEW
+          cd $DIR
           ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: StreamVault-APK
-          path: streamvault/app/build/outputs/apk/debug/*.apk
+          path: "**/outputs/apk/debug/*.apk"
