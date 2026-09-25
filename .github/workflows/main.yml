@@ -7,18 +7,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Build APK
+
+      - name: Grant execute permission
+        run: chmod +x streamvault/gradlew
+
+      - name: Build Debug APK
         run: |
           cd streamvault
-          chmod +x gradlew
           ./gradlew assembleDebug
+
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: StreamVault-APK
           path: streamvault/app/build/outputs/apk/debug/*.apk
