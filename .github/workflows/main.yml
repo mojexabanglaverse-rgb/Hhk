@@ -19,37 +19,12 @@ jobs:
           ZIP=$(find . -name "*.zip" -type f | head -1)
           unzip "$ZIP" -d extracted/
 
-      - name: Create Debug Keystore
-        run: |
-          mkdir -p ~/.android
-          keytool -genkey -v \
-            -keystore ~/.android/debug.keystore \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
-          DIR=$(find extracted/ -name "build.gradle.kts" | grep -v "app/" | head -1 | xargs dirname)
-          cp ~/.android/debug.keystore "$DIR/debug.keystore"
-
-      - name: Setup Gradle Wrapper
-        run: |
-          DIR=$(find extracted/ -name "build.gradle.kts" | grep -v "app/" | head -1 | xargs dirname)
-          cd "$DIR"
-          gradle wrapper --gradle-version 9.3.1
-          chmod +x gradlew
-
       - name: Build APK
         run: |
-          DIR=$(find extracted/ -name "build.gradle.kts" | grep -v "app/" | head -1 | xargs dirname)
+          DIR=$(find extracted/ -name "gradlew" -type f | head -1 | xargs dirname)
+          chmod +x "$DIR/gradlew"
           cd "$DIR"
-          ./gradlew assembleDebug \
-            -Pandroid.injected.signing.store.file="$PWD/debug.keystore" \
-            -Pandroid.injected.signing.store.password=android \
-            -Pandroid.injected.signing.key.alias=androiddebugkey \
-            -Pandroid.injected.signing.key.password=android
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
