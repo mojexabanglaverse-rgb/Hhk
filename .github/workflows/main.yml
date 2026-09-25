@@ -24,7 +24,7 @@ jobs:
           DIR=$(find extracted/ -name "build.gradle.kts" | grep -v "app/" | head -1 | xargs dirname)
           echo "Project dir: $DIR"
           cd "$DIR"
-          gradle wrapper --gradle-version 8.9
+          gradle wrapper --gradle-version 9.3.1
           chmod +x gradlew
 
       - name: Build APK
