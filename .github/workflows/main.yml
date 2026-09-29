@@ -29,5 +29,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: StreamVault-APK
+          name: VidBook-APK
           path: "**/outputs/apk/debug/*.apk"
